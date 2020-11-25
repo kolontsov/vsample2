@@ -69,6 +69,8 @@ class VolcaSample2 extends MidiDevice {
     }
     async getSampleName(n) {
         let reply = await this.send(getSampleHeader(n), getSampleHeaderReply(n))
+	if (!reply)
+            throw new Error('No answer in time')
         let len = [7, 7, 7, 3]
         let name = '';
         for (let i = 0, ofs = 10; i < len.length; ofs += 8, i++)
@@ -84,7 +86,7 @@ async function main() {
         for (let i = 0; i < 200; i++)
             console.log(i, (await volca.getSampleName(i)) || '-- n/a --')
         process.exit(0)
-    } catch (e) { console.log('ERROR',) }
+    } catch (e) { console.log('ERROR:', e.message) }
 }
 
 main()
